@@ -1,0 +1,63 @@
+To build an API using FastAPI, you should follow these steps:
+
+1. **Installation**: Install FastAPI using pip:
+   ```bash
+   pip install fastapi[all]
+   ```
+
+2. **Create a FastAPI instance** and define basic routes:
+   ```python
+   from fastapi import FastAPI
+
+   app = FastAPI()
+
+   @app.get("/")
+   async def read_root():
+       return {"Hello": "World"}
+   ```
+
+3. **Define Path Parameters** for dynamic URLs:
+   ```python
+   @app.get("/items/{item_id}")
+   async def read_item(item_id: int, q: str = None):
+       return {"item_id": item_id, "query": q}
+   ```
+
+4. **Use Pydantic Models** to define request bodies:
+   ```python
+   from pydantic import BaseModel
+
+   class Item(BaseModel):
+       name: str
+       price: float
+       is_active: bool = True
+
+   @app.post("/items/")
+   async def create_item(item: Item):
+       return item
+   ```
+
+5. **Utilize Response Models** to define expected output:
+   ```python
+   @app.get("/items/", response_model=List[Item])
+   async def get_items():
+       return [{"name": "item1", "price": 100.0}]
+   ```
+
+6. **Interactive API Docs**: Access API documentation at `/docs` and `/redoc`.
+
+7. **Dependencies**: Manage shared logic with FastAPI's dependency injection:
+   ```python
+   async def common_parameters(q: str = None):
+       return {"q": q}
+
+   @app.get("/items/")
+   async def read_items(commons: dict = Depends(common_parameters)):
+       return commons
+   ```
+
+8. **Middleware and Error Handling**: Add middleware for request/response handling and define custom error responses.
+
+9. **Asynchronous Requests**: Use async/await to handle requests concurrently.
+
+This structured approach equips you to efficiently create a robust API with FastAPI.
